@@ -1,0 +1,46 @@
+create table borrow (
+    date_of_issue Date ,
+    name varchar2(20) ,
+    book varchar2(20) ,
+    status char 
+);
+
+create table fine(
+    date_of_return Date , 
+    stud_name varchar2(20) ,
+    book_name varchar2(20) ,
+    fine_cal number
+);
+
+
+Declare
+    name_var varchar2(20);
+    book_var varchar2(20);
+    doi Date;
+    dor Date;
+    diff int;
+    amt int;
+Begin
+    name_var :='&name';
+    book_var :='&book';
+
+    select date_of_issue into doi from borrow where name=name_var and book = book_var;
+
+    select SYSDATE into dor from dual;
+    diff:= doi - dor;
+
+    if diff >=15  and diff <30 then
+        amt:=diff*5;        
+        insert into fine value(dor , name_var , book_var , amt);
+    elsif diff>=30 then 
+        amt:= diff*50;
+        insert into fine value(dor , name_var , book_var , amt);
+    end if;
+
+    update borrow set status='r' where name = name_var and book = book_var;
+
+Exception 
+    when no_data_found then
+        dbms_output.put_line('No data found');
+End;
+/

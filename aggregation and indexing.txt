@@ -1,0 +1,18 @@
+
+
+//aggregation
+db.stud.aggregate([ {$match:{marks:{$lte:30}}} ,  {$group:{_id:'$name' , count:{$sum:1}}} ])
+
+db.stud.aggregate([{$group:{_id:'$name' , count:{$sum:1}}} ])
+
+
+//Indexing
+
+---before 
+db.stud.find({rno:11}).explain("executionStats")
+db.stud.find({rno:11})
+
+---after
+db.stud.createIndex({name:1})
+db.stud.createIndex({name:1 , roll:1}) 
+db.stud.find({name:'ck'}).explain("executionStats")

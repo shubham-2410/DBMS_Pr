@@ -1,0 +1,105 @@
+
+create table o_roll_call(
+    rno int Primary Key,
+    name varchar2(20) ,
+    status varchar2(20)
+);
+
+create table n_roll_call(
+    rno inr Primary Key,
+    name varchar2(20),
+    status varchar2(20)
+);
+
+---implicit cursor
+
+Begin
+    update o_roll_call set status='Present' where rno=16;
+
+    if sql%found then
+        dbms_output.put_line('Data Found');
+    elsif sql%not_found then
+        dbms_output.put_line('No data found');
+    end if;
+
+    if sql%rowcount>0 then  
+        dbms_output.put_line(sql%rowcount || ' rows updated');
+    else
+        dbms_output.put_line('No row updated');
+    end if;
+End;
+/
+
+--- Explicit cursor
+
+Declare
+    cursor exp_cur is select rno , name , status from o_roll_call where status='Present';
+    temp exp_cur%rowtype;
+Begin
+    open exp_cur;
+
+    loop
+        fetch exp_cur into temp;
+        exit when exp_cur%notfound ;
+        dbms_output.put_line('Roll no.: ' || temp.rno || ' Name: '||temp.name || ' Status: '||temp.status );
+    end loop;
+
+    if exp_cur%rowcount >0 then
+        dbms_output.put_line( exp_cur%rowcount || ' rows found');
+    else
+        dbms_output.put_line('No row found');
+    end if;
+
+    close exp_cur;
+End ;
+/
+
+--- for cursor
+
+Declare 
+    cursor for_cur is select rno , name , status from o_roll_call where status ='Present';
+    temp for_cur%rowtype;
+Begin
+
+    for temp int for_cur loop
+        dbms_output.put_line('Roll no.: ' || temp.rno || ' Name: '||temp.name || ' Status: '||temp.status );
+    end loop;
+
+    if for_cur%rowcount >0 then
+        dbms_output.put_line(for_cur%rowcount || ' rows found');
+    else
+        dbms_output.put_line(' No row found');
+
+End;
+/
+
+--- Parameterized cursor
+
+Declare 
+    roll number;
+    cursor param_cur(roll) is select rno , name , status from o_roll_call ;
+    temp param_cur%rowtype;
+
+Begin
+    roll:=roll;
+    
+    for temp in param_cur(roll) loop
+        dbms_output.put_line('Name : ' ||temp.name || ' Roll : '||temp.rno || ' Status : ' ||temp.status);
+    end loop;
+
+End;
+/
+
+--- Merge 
+
+Begin
+    Merge into n_roll_call t1 using (select rno , name , status from o_roll_call) t2 on (t1.rno == t2.rno) 
+    when not matched insert into n_roll_call values(rno , name , status);
+
+    if sql%rowcount>0 then   
+        dbms_output.put_line(sql%rowcount || ' enteries merged');
+    else
+        dbms_output.put_line('No enteries merged');
+    end if;
+End;
+/

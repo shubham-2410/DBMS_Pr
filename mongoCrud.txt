@@ -1,0 +1,138 @@
+@ubuntu:~$ mongo
+
+//Sudo systemctl start mongod
+//mongosh
+
+//to list out database names
+> show dbs
+
+//to create database
+> use db1
+
+//to check in which database I am working
+> db
+
+//to drop database in which I am working
+> db.dropDatabase()
+
+//To create collection
+> db.createCollection('stud')
+
+//to list out collection names
+> show collections
+
+// inserting single document
+> db.emp.insertOne({rno:1,name:'Bhavana'})
+
+// inserting multiple document
+> db.emp.insertMany([{rno:1,name:'Bhavana'}, { rno:2,name:’Onkar ', }])
+
+// To display data from collection
+> db.emp.find()
+{ "_id" : ObjectId("5d7d3daf315728b4998f522e"), "rno" : 1, "name" : "Bhavana" }
+{ "_id" : ObjectId("5d7d3f28315728b4998f522f"), "name" : "Amit", "rno" : 2 }
+
+// To insert date use ISODate function
+> db.emp.insert({rno:15, name:'Ravina', dob: ISODate("2019-09-14")})
+
+// To update document
+db.Employee.updateOne(
+{"Employeeid" : 1},
+{$set: { "EmployeeName" : "Raj"}});
+
+// To update multiple document
+db.Employee.updateMany(
+{"branch" : “CSE”},
+{$set: { "EmployeeName" : "NewMartin", }});
+
+
+//Find command with Condition 
+> db.stud.find({rno:5})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836d"), "rno" : 5, "name" : "Jivan" }
+
+//Find command with condition to display specified field 
+> db.stud.find({rno:5},{name:1})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836d"), "name" : "Jivan" }
+
+// To display data whose rno is greater than 2
+> db.stud.find({rno:{$gt:2}})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836b"), "rno" : 3, "name" : "Sagar" }
+
+// To display data whose rno is less than equal to  2
+> db.stud.find({rno:{$lte:2}})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+
+// To display data whose rno is less than 2
+> db.stud.find({rno:{$lt:2}})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+// To display data whose rno is not equal to 2
+> db.stud.find({rno:{$ne:2}})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+// To display data whose rno is either 1 or 3 or 5 using in operator
+> db.stud.find({rno:{$in:[1,3,5]}})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+//Sorting Command -1 is for Descending
+> db.stud.find().sort({rno:-1})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836d"), "rno" : 5, "name" : "Jivan" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836c"), "rno" : 4, "name" : "Reena" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836b"), "rno" : 3, "name" : "Sagar" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836a"), "rno" : 2, "name" : "Savita" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+
+
+
+//Sorting Command 1 is for Ascending
+> db.stud.find().sort({name:1})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836d"), "rno" : 5, "name" : "Jivan" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836c"), "rno" : 4, "name" : "Reena" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836b"), "rno" : 3, "name" : "Sagar" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836a"), "rno" : 2, "name" : "Savita" }
+
+//Distinct command to show only unique values for roll no
+> db.stud.distinct("rno")
+[ 1, 2, 3, 4, 5 ]
+
+// Limit use to show only some records from starting
+> db.stud.find().limit(2)
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836a"), "rno" : 2, "name" : "Savita" }
+
+// Skip use to show all records after skipping some records
+> db.stud.find().skip(2)
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836b"), "rno" : 3, "name" : "Sagar" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836c"), "rno" : 4, "name" : "Reena" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836d"), "rno" : 5, "name" : "Jivan" }
+
+// Shows documents where name starting with A
+> db.stud.find({name:/^A/})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+// Shows documents where name ending with i
+> db.stud.find({name:/i$/})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd8369"), "rno" : 1, "name" : "Ashiti" }
+
+// Shows documents where name having letter  a anywhere 
+> db.stud.find({name:/a/})
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836a"), "rno" : 2, "name" : "Savita" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836b"), "rno" : 3, "name" : "Sagar" }
+{ "_id" : ObjectId("5d83af5aa44331f62bcd836c"), "rno" : 4, "name" : "Reena" }
+
+
+
+
+// count to show number of documents in collection
+> db.stud.find().count()
+5
+> db.stud.find({rno:{$gt:2}}).count()
+3
+
+//It will remove record having rno as 4
+> db.stud.remove({rno:4})
+
+

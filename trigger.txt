@@ -1,0 +1,33 @@
+create table libTab(
+    name varchar2(20) Primary Key ,
+    status varchar2(20) not null,
+);
+
+create table libAudit(
+    dateModified Date ,
+    name varchar2(20) not null,
+    oldStatus varchar2(20) ,
+    newStatus varchar2(20) ,
+    operation varchar2(20)
+);
+
+SET SERVEROUTPUT ON
+Create or Replace Trigger tri 
+After Insert or Update or Delete on libTab for each row
+enable
+Begin
+    if INSERTING then
+        insert into libAudit values (SYSDATE ,:new.name ,  NULL , :new.status , 'Insert' );
+        dbms_output.put_line('Inserted !!');
+    elsif UPDATING then
+        insert into libAudit values (SYSDATE ,:old.name ,  :old.status , :new.status , 'Update' );
+        dbms_output.put_line('Updated !!');
+    elsif DELETING then
+        insert into libAudit values (SYSDATE ,:old.name ,  :old.status , NULL , 'Delete' );
+        dbms_output.put_line('Delete !!');
+    end if;
+Exception 
+    when no_data_found then
+        dbms_output.put_line('No data found');
+End;
+/

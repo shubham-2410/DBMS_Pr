@@ -1,0 +1,58 @@
+create table result(
+    rno number ,
+    name varchar(20),
+    status varchar(20),
+    Primary Key (rno)
+);
+
+Create table studMarks (
+    rno number,
+    name varchar(20),
+    marks number,
+    Primary Key (rno)
+);
+
+SET SERVEROUTPUT ON
+CREATE or REPLACE Procedure proc(rno IN number , name IN varchar , marks IN number) AS
+
+Begin
+    if(marks<=1500 and marks>=990) then
+        Insert into result value (rno , name , 'DISTINCTION');
+        dbms_output.put_line(rno || ' DISTINCTION');
+    elsif (marks<=989 and marks>=900) then
+        Insert into result value (rno , name , 'First Class');
+        dbms_output.put_line(rno || ' First Class');
+    elsif (marks<=899 and marks>=825) then
+        Insert into result value (rno , name , 'Second Class');
+        dbms_output.put_line(rno || ' Second class');
+    else
+        Insert into result value(rno , name , 'Fail');
+        dbms_output.put_line(rno || ' Fail');
+    end if;
+
+    Insert into studMarks value (rno , name , marks);
+End proc;
+/
+
+CREATE or REPLACE Function func (rno IN number , name IN varchar , marks IN number) return varchar AS
+
+Begin
+    proc(rno , name , marks);
+    return 'Successfull';
+End;
+/
+
+SET SERVEROUTPUT ON
+Declare
+    rno number;
+    name varchar;
+    marks number;
+    status varchar;
+Begin  
+    rno:=&rno;
+    name:='&name';
+    marks:=&marks;
+    status := func(rno , name , marks);
+    dbms_output.put_line(status);
+End;
+/

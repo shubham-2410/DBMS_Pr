@@ -1,0 +1,39 @@
+
+-----Map Function
+var mapFunction = function(){
+    emit(this.name , this.marks);
+};
+
+
+----Reduce Function
+var avgReduce = function (key , value){
+    return Array.avg(value);
+};
+
+var sumReduce = function(key , value){
+    return Array.sum(value);
+};
+
+var customReduce = function(key , value){
+
+    var totalMarks = Array.sum(value);
+    if(totalMarks >85 ){
+        return 'Class A';
+    }
+    else if(totalMarks <=85 && totalMarks >60 ){
+        return 'Class B';
+    }
+    else if (totalMarks <=60 && totalMarks >=50){
+        return 'Class C';
+    }
+    else{
+        return 'Fail ';
+    }
+};
+
+
+-----Command for mapReduce
+db.stud.mapReduce(mapFunction , customReduce , {out:"Class"})
+
+-----Output 
+db.Class.find({})

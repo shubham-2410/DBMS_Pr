@@ -1,0 +1,36 @@
+//joins
+create table stud(
+    roll_no int Primary Key,
+    stud_name varchar(20),
+    marks int,
+    course_id int,
+    foreign key (course_id) references course(course_id)
+);
+
+create table course(
+    course_id int Primary Key,
+    course_name varchar(20)
+);
+
+select stud.roll_no , stud.stud_name , course.course_name from stud
+left join course on stud.course_id = course.course_id;
+
+select stud.roll_no , stud.stud_name , course.course_name from stud
+inner join course on stud.course_id = course.course_id;
+
+select stud.roll_no , stud.stud_name , course.course_name from stud
+right join course on stud.course_id = course.course_id;
+
+
+
+
+// view
+
+create view cs_stud AS
+select * from stud
+where course_id = (select course_id from course where course_name='cs');
+
+
+CREATE VIEW cs_stud AS
+SELECT * FROM stud
+WHERE course_id IN (SELECT course_id FROM course WHERE course_name='cs');

@@ -1,0 +1,19 @@
+CREATE table area(
+    radius number Primary Key,
+    aarea number Not Null
+);
+
+SET SERVEROUTPUT ON
+
+Declare
+    rad number;
+    pi number := 3.14;
+    cal number;
+Begin
+    for rad in 5..9 LOOP
+        cal := pi*rad*rad;
+        Insert into area values (rad , cal);
+    END LOOP; 
+END;
+/
+
