@@ -94,7 +94,7 @@ End;
 
 Begin
     Merge into n_roll_call t1 using (select rno , name , status from o_roll_call) t2 on (t1.rno == t2.rno) 
-    when not matched insert into n_roll_call values(rno , name , status);
+    when not matched then insert into n_roll_call values(rno , name , status);
 
     if sql%rowcount>0 then   
         dbms_output.put_line(sql%rowcount || ' enteries merged');
